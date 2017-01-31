@@ -12,48 +12,27 @@ namespace WinTail
     {
         public const string ExitCommand = "exit";
         public const string StartCommand = "start";
-        private IActorRef _consoleWriterActor;
+        private IActorRef _validationActor;
 
-        public ConsoleReaderActor(IActorRef consoleWriterActor)
+        public ConsoleReaderActor(IActorRef validationActor)
         {
-            _consoleWriterActor = consoleWriterActor;
+            _validationActor = validationActor;
         }
 
         protected override void OnReceive(object message)
         {
             if (message?.Equals(StartCommand) == true)
                 DoPrintInstructions();
-            else
-            {
-                var error = message as Message.InputError;
-                if (error != null)
-                {
-                    _consoleWriterActor.Tell(error);
-                }
-            }
 
             var read = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(read))
-            {
-                Self.Tell(new Message.NullInputError("Input is null!"));
-                return;
-            }
 
             if (String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
             {
                 Context.System.Terminate();
                 return;
             }
-            
-            if (IsValid(read))
-            {
-                _consoleWriterActor.Tell(new Message.InputSuccess("Everything is good!"));
-                Self.Tell(new Message.Continue());
-                return;
-            }
-            
-            Self.Tell(new Message.ValidationInputError("Invalid input!"));
+
+            _validationActor.Tell(read);
         }
 
 
@@ -64,10 +43,6 @@ namespace WinTail
             Console.WriteLine("Type 'exit' to quit this application at any time.\n");
         }
 
-        private static bool IsValid(string message)
-        {
-            var valid = message.Length % 2 == 0;
-            return valid;
-        }
+        
     }
 }
