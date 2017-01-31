@@ -1,5 +1,6 @@
 ﻿using System;
 using Akka.Actor;
+using WinTail.Messages;
 
 namespace WinTail
 {
@@ -11,24 +12,23 @@ namespace WinTail
     {
         protected override void OnReceive(object message)
         {
-            var msg = message as string;
-
-            // make sure we got a message
-            if (string.IsNullOrEmpty(msg))
+            if (message is InputSuccess)
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("Please provide an input.\n");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine((message as InputSuccess).Reason);
                 Console.ResetColor();
                 return;
             }
 
-            // if message has even # characters, display in red; else, green
-            var even = msg.Length % 2 == 0;
-            var color = even ? ConsoleColor.Red : ConsoleColor.Green;
-            var alert = even ? "Your string had an even # of characters.\n" : "Your string had an odd # of characters.\n";
-            Console.ForegroundColor = color;
-            Console.WriteLine(alert);
-            Console.ResetColor();
+            if (message is InputError)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine((message as InputError).Reason);
+                Console.ResetColor();
+                return;
+            }
+            Console.WriteLine(message);
+            
 
         }
     }

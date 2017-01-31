@@ -1,5 +1,6 @@
 using System;
 using Akka.Actor;
+using WinTail.Messages;
 
 namespace WinTail
 {
@@ -10,6 +11,7 @@ namespace WinTail
     class ConsoleReaderActor : UntypedActor
     {
         public const string ExitCommand = "exit";
+        public const string StartCommand = "start";
         private IActorRef _consoleWriterActor;
 
         public ConsoleReaderActor(IActorRef consoleWriterActor)
@@ -19,22 +21,53 @@ namespace WinTail
 
         protected override void OnReceive(object message)
         {
-            var read = Console.ReadLine();
-            if (!string.IsNullOrEmpty(read) && String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
+            if (message?.Equals(StartCommand) == true)
+                DoPrintInstructions();
+            else
             {
-                // shut down the system (acquire handle to system via
-                // this actors context)
-                Context.System.Terminate();
+                var error = message as InputError;
+                if (error != null)
+                {
+                    _consoleWriterActor.Tell(error);
+                }
+            }
+
+            var read = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(read))
+            {
+                Self.Tell(new NullInputError("Input is null!"));
                 return;
             }
 
-            // send input to the console writer to process and print
-            // YOU NEED TO FILL IN HERE
-            _consoleWriterActor.Tell(read);
-            // continue reading messages from the console
-            // YOU NEED TO FILL IN HERE
-            Self.Tell("continue");
+            if (String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
+            {
+                Context.System.Terminate();
+                return;
+            }
+            
+            if (IsValid(read))
+            {
+                _consoleWriterActor.Tell(new InputSuccess("Everything is good!"));
+                Self.Tell(new Continue());
+                return;
+            }
+            
+            Self.Tell(new ValidationInputError("Invalid input!"));
         }
 
+
+        private void DoPrintInstructions()
+        {
+            Console.WriteLine("Write whatever you want into the console!");
+            Console.WriteLine("Some entries will pass validation, and some won't...\n\n");
+            Console.WriteLine("Type 'exit' to quit this application at any time.\n");
+        }
+
+        private static bool IsValid(string message)
+        {
+            var valid = message.Length % 2 == 0;
+            return valid;
+        }
     }
 }
