@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace WinTail.Messages
 {
-    public class Continue
+    public partial class Message
     {
+        public class Continue
+        {
+        }
     }
 }

@@ -12,18 +12,18 @@ namespace WinTail
     {
         protected override void OnReceive(object message)
         {
-            if (message is InputSuccess)
+            if (message is Message.InputSuccess)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine((message as InputSuccess).Reason);
+                Console.WriteLine((message as Message.InputSuccess).Reason);
                 Console.ResetColor();
                 return;
             }
 
-            if (message is InputError)
+            if (message is Message.InputError)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine((message as InputError).Reason);
+                Console.WriteLine((message as Message.InputError).Reason);
                 Console.ResetColor();
                 return;
             }

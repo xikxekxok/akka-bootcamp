@@ -1,12 +1,15 @@
 ﻿namespace WinTail.Messages
 {
-    public class InputSuccess
+    public partial class Message
     {
-        public InputSuccess(string reason)
+        public class InputSuccess
         {
-            Reason = reason;
-        }
+            public InputSuccess(string reason)
+            {
+                Reason = reason;
+            }
 
-        public string Reason { get; private set; }
+            public string Reason { get; private set; }
+        }
     }
 }

@@ -1,10 +1,13 @@
 ﻿namespace WinTail.Messages
 {
-    public class ValidationInputError : InputError
+    public partial class Message
     {
-        public ValidationInputError(string reason) : base(reason)
+        public class ValidationInputError : InputError
         {
+            public ValidationInputError(string reason) : base(reason)
+            {
 
+            }
         }
     }
 }

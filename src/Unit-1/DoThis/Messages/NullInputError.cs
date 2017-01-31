@@ -1,10 +1,13 @@
 ﻿namespace WinTail.Messages
 {
-    public class NullInputError : InputError
+    public partial class Message
     {
-        public NullInputError(string reason) : base(reason)
+        public class NullInputError : InputError
         {
+            public NullInputError(string reason) : base(reason)
+            {
 
+            }
         }
     }
 }

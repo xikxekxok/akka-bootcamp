@@ -25,7 +25,7 @@ namespace WinTail
                 DoPrintInstructions();
             else
             {
-                var error = message as InputError;
+                var error = message as Message.InputError;
                 if (error != null)
                 {
                     _consoleWriterActor.Tell(error);
@@ -36,7 +36,7 @@ namespace WinTail
 
             if (string.IsNullOrEmpty(read))
             {
-                Self.Tell(new NullInputError("Input is null!"));
+                Self.Tell(new Message.NullInputError("Input is null!"));
                 return;
             }
 
@@ -48,12 +48,12 @@ namespace WinTail
             
             if (IsValid(read))
             {
-                _consoleWriterActor.Tell(new InputSuccess("Everything is good!"));
-                Self.Tell(new Continue());
+                _consoleWriterActor.Tell(new Message.InputSuccess("Everything is good!"));
+                Self.Tell(new Message.Continue());
                 return;
             }
             
-            Self.Tell(new ValidationInputError("Invalid input!"));
+            Self.Tell(new Message.ValidationInputError("Invalid input!"));
         }
 
 
