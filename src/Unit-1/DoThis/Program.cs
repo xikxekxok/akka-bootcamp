@@ -21,10 +21,12 @@ namespace WinTail
             // make consoleReaderActor using these props: Props.Create(() => new ConsoleReaderActor(consoleWriterActor))
 
             var consoleWriteActor = MyActorSystem.ActorOf(Props.Create<ConsoleWriterActor>());
-            var tailActor = MyActorSystem.ActorOf(Props.Create<TailCoordinatorActor>());
 
-            var validationActor = MyActorSystem.ActorOf(Props.Create<FileValidatorActor>(consoleWriteActor, tailActor));
-            var consoleReadActor = MyActorSystem.ActorOf(Props.Create(()=> new ConsoleReaderActor(validationActor)));
+            var tailCoordinatorActor = MyActorSystem.ActorOf(Props.Create<TailCoordinatorActor>(), "tailCoordinator");
+
+            var fileValidatorActor = MyActorSystem.ActorOf(Props.Create<FileValidatorActor>(consoleWriteActor), "fileValidator");
+
+            var consoleReadActor = MyActorSystem.ActorOf(Props.Create<ConsoleReaderActor>(), "consoleRead");
             consoleReadActor.Tell(ConsoleReaderActor.StartCommand);
             // tell console reader to begin
             //YOU NEED TO FILL IN HERE
