@@ -1,6 +1,6 @@
 ﻿using System;
 using Akka.Actor;
-using WinTail.Messages;
+using WinTail.MessagesNs;
 
 namespace WinTail
 {
@@ -12,18 +12,20 @@ namespace WinTail
     {
         protected override void OnReceive(object message)
         {
-            if (message is Message.InputSuccess)
+            var success = message as Messages.InputSuccess;
+            if (success != null)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine((message as Message.InputSuccess).Reason);
+                Console.WriteLine(success.Reason);
                 Console.ResetColor();
                 return;
             }
 
-            if (message is Message.InputError)
+            var error = message as Messages.InputError;
+            if (error != null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine((message as Message.InputError).Reason);
+                Console.WriteLine(error.Reason);
                 Console.ResetColor();
                 return;
             }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Akka.Actor;
-using WinTail.Messages;
+using WinTail.MessagesNs;
 
 namespace WinTail
 {
@@ -23,24 +23,24 @@ namespace WinTail
 
             NotifyWriter(s);
 
-            Sender.Tell(new Message.Continue());
+            Sender.Tell(new Messages.Continue());
         }
 
         private void NotifyWriter(string s)
         {
             if (string.IsNullOrEmpty(s))
             {
-                _consoleWriterActor.Tell(new Message.NullInputError("empty input!"));
+                _consoleWriterActor.Tell(new Messages.NullInputError("empty input!"));
                 return;
             }
 
             if (s.Length % 2 == 0)
             {
-                _consoleWriterActor.Tell(new Message.InputSuccess("message is ok!"));
+                _consoleWriterActor.Tell(new Messages.InputSuccess("message is ok!"));
                 return;
             }
 
-            _consoleWriterActor.Tell(new Message.ValidationInputError("message is invalid!"));
+            _consoleWriterActor.Tell(new Messages.ValidationInputError("message is invalid!"));
         }
     }
 }

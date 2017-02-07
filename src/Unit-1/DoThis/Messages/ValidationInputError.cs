@@ -1,6 +1,6 @@
-﻿namespace WinTail.Messages
+﻿namespace WinTail.MessagesNs
 {
-    public partial class Message
+    public partial class Messages
     {
         public class ValidationInputError : InputError
         {
